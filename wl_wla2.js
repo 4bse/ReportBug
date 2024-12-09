@@ -77,7 +77,7 @@ module.exports = {
             const gängm = interaction.fields.getTextInputValue('gängm');
 
             const id = interaction.user.id;
-            const channel = client.channels.cache.get('1301901658388959314');
+            const channel = client.channels.cache.get('1301901658388959314'); // Adjust the channel ID as needed
 
             const embed = new EmbedBuilder()
                 .setColor('FFFFFF')
@@ -108,41 +108,6 @@ module.exports = {
                 ],
                 ephemeral: true,
             });
-        }
-
-        // Handle Approval or Denial
-        if (interaction.isButton()) {
-            const [action, userId] = interaction.customId.split(' - ');
-            if (action === 'godkänd' || action === 'nekad') {
-                const targetChannelId = action === 'godkänd' ? '1315644567936172082' : '1315644688895836250';
-                const targetChannel = client.channels.cache.get(targetChannelId);
-                if (!targetChannel) {
-                    return interaction.reply({
-                        content: 'Kunde inte hitta målet för att flytta meddelandet.',
-                        ephemeral: true,
-                    });
-                }
-
-                // Move the message
-                const messages = await interaction.channel.messages.fetch({ limit: 10 });
-                const targetMessage = messages.find(
-                    msg => msg.embeds[0]?.footer?.text === 'Whitelist Ansökan System' && msg.author.id === client.user.id
-                );
-
-                if (!targetMessage) {
-                    return interaction.reply({
-                        content: 'Kunde inte hitta meddelandet att flytta.',
-                        ephemeral: true,
-                    });
-                }
-
-                await targetChannel.send({
-                    content: `Ansökan för användaren <@${userId}> har blivit ${action === 'godkänd' ? '**Godkänd**' : '**Nekad**'}.`,
-                    embeds: targetMessage.embeds,
-                });
-                await targetMessage.delete();
-                await interaction.reply({ content: 'Ansökan har flyttats.', ephemeral: true });
-            }
         }
     },
 };
